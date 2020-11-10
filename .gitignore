@@ -1,8 +1,12 @@
 *~
-/.DS_Store
+.DS_Store
 .ipynb_checkpoints
 
 */output/*
 */output_ref/*
 output_ref.zip
+
+g
+__pycache__
+old
 
