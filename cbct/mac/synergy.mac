@@ -1,0 +1,161 @@
+
+#=====================================================
+# VERBOSITY
+#=====================================================
+
+/control/execute mac/verbose.mac
+
+#=====================================================
+# VISUALISATION
+#=====================================================
+
+#/control/execute mac/visu.mac
+
+#=====================================================
+# GEOMETRY
+#=====================================================
+
+# -----------------------------------------------------
+# World
+/gate/geometry/setMaterialDatabase data/GateMaterials.db
+/gate/world/setMaterial            Air
+/gate/world/geometry/setXLength    3 m
+/gate/world/geometry/setYLength    3 m
+/gate/world/geometry/setZLength    3 m
+
+# Box
+/gate/world/daughters/name           Gantry
+/gate/world/daughters/insert         box
+/gate/Gantry/geometry/setZLength     0.2 m
+/gate/Gantry/geometry/setYLength     0.2 m
+/gate/Gantry/geometry/setXLength     0.2 m
+/gate/Gantry/setMaterial             Air
+/gate/Gantry/vis/setVisible          1
+/gate/Gantry/vis/setColor            yellow
+
+# Detection plane
+/gate/world/daughters/name                    DetectorPlane
+/gate/world/daughters/insert                  box
+/gate/DetectorPlane/geometry/setZLength       1409.6 mm
+/gate/DetectorPlane/geometry/setYLength       1409.6 mm
+/gate/DetectorPlane/geometry/setXLength       10 mm
+/gate/DetectorPlane/placement/setTranslation  -536 0 0 mm
+/gate/DetectorPlane/setMaterial               Air
+/gate/DetectorPlane/vis/setVisible            1
+/gate/DetectorPlane/vis/setColor              yellow
+
+# Box FOV
+/gate/world/daughters/name           FOV
+/gate/world/daughters/insert         box
+/gate/FOV/geometry/setXLength        0.8 m
+/gate/FOV/geometry/setYLength        0.8 m
+/gate/FOV/geometry/setZLength        0.8 m
+/gate/FOV/setMaterial                Air
+/gate/FOV/vis/setVisible             1
+/gate/FOV/vis/setColor               green
+
+# The patient is rotated instead of the linac => change rotation sign
+/gate/FOV/placement/setRotationAxis  0 1 0
+/gate/FOV/placement/setRotationAngle 0 deg
+
+
+# -----------------------------------------------------
+# HU materials
+/gate/HounsfieldMaterialGenerator/SetMaterialTable                  data/Schneider2000MaterialsTable.txt
+/gate/HounsfieldMaterialGenerator/SetDensityTable                   data/Schneider2000DensitiesTable.txt
+/gate/HounsfieldMaterialGenerator/SetDensityTolerance               0.2 g/cm3
+/gate/HounsfieldMaterialGenerator/SetOutputMaterialDatabaseFilename data/patient-HUmaterials.db
+/gate/HounsfieldMaterialGenerator/SetOutputHUMaterialFilename       data/patient-HU2mat.txt
+/gate/HounsfieldMaterialGenerator/Generate
+
+# -----------------------------------------------------
+# Patient
+/gate/FOV/daughters/name                                patient
+/gate/FOV/daughters/insert                              ImageNestedParametrisedVolume
+/gate/geometry/setMaterialDatabase                      data/patient-HUmaterials.db
+/gate/patient/geometry/setHUToMaterialFile              data/patient-HU2mat.txt
+/gate/patient/geometry/setImage                         data/patient-lung-2mm.mhd
+/gate/patient/geometry/TranslateTheImageAtThisIsoCenter 4.6 30.9 -655.5 mm
+#/gate/patient/geometry/buildAndDumpLabeledImage         data/label.mhd
+
+#=====================================================
+# PHYSIC
+#=====================================================
+
+/gate/physics/addPhysicsList emstandard_opt1
+
+/gate/physics/Gamma/SetCutInRegion      world 10 mm
+/gate/physics/Electron/SetCutInRegion   world 10 mm
+/gate/physics/Positron/SetCutInRegion   world 10 mm
+
+# /gate/physics/Gamma/SetCutInRegion      patient 10 mm
+# /gate/physics/Electron/SetCutInRegion   patient 10 mm
+# /gate/physics/Positron/SetCutInRegion   patient 10 mm
+
+# /gate/physics/SetMinRemainingRangeInRegion world 10 mm
+# /gate/physics/ActivateSpecialCuts e-
+
+/gate/physics/displayCuts
+
+#=====================================================
+# INITIALISATION
+#=====================================================
+
+/gate/run/initialize
+
+#=====================================================
+# BEAM
+#=====================================================
+
+/gate/source/addSource mybeam gps
+/gate/source/mybeam/attachTo           Gantry
+/gate/source/mybeam/gps/particle       gamma
+/gate/source/mybeam/gps/ene/type       Mono
+/gate/source/mybeam/gps/ene/mono       60 keV
+/gate/source/mybeam/gps/pos/type       Point
+/gate/source/mybeam/gps/pos/halfx      8 mm
+/gate/source/mybeam/gps/pos/halfy      8 mm
+/gate/source/mybeam/gps/pos/centre     1060 0 0 mm
+/gate/source/mybeam/gps/pos/rot1       0 1 0
+/gate/source/mybeam/gps/pos/rot2       0 0 1
+/gate/source/mybeam/gps/pos/type       Plane
+/gate/source/mybeam/gps/pos/shape      Rectangle
+/gate/source/mybeam/gps/direction      -1 0 0
+/gate/source/mybeam/gps/ang/type       focused
+/gate/source/mybeam/gps/ang/rot1       0 1 0
+/gate/source/mybeam/gps/ang/rot2       0 0 1
+/gate/source/mybeam/gps/ang/focuspoint 1000 0 0 mm
+
+#=====================================================
+# DETECTORS
+#=====================================================
+
+# Photon counting detector
+/gate/actor/addActor FluenceActor           DetectorActor
+/gate/actor/DetectorActor/save              output/detector.mhd
+/gate/actor/DetectorActor/attachTo          DetectorPlane
+/gate/actor/DetectorActor/stepHitType       pre
+#/gate/actor/DetectorActor/setSize          10 409.6 409.6 mm
+/gate/actor/DetectorActor/setSize           10 500 500 mm
+/gate/actor/DetectorActor/setResolution     1 100 100
+/gate/actor/DetectorActor/enableScatter     true
+/gate/actor/DetectorActor/saveEveryNSeconds 20
+
+# Stat
+/gate/actor/addActor  SimulationStatisticActor stat
+/gate/actor/stat/save output/stats.txt
+/gate/actor/stat/saveEveryNSeconds 20
+
+#=====================================================
+# MAIN
+#=====================================================
+
+# DEBUG
+#/tracking/verbose 1
+#/tracking/verbose 1
+
+/gate/random/setEngineName MersenneTwister
+/gate/random/setEngineSeed auto
+
+/gate/application/setTotalNumberOfPrimaries 100
+/gate/application/start
