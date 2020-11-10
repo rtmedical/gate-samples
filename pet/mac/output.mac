@@ -1,0 +1,34 @@
+
+/gate/actor/addActor               SimulationStatisticActor stat
+/gate/actor/stat/save              output/stat.txt
+#/gate/actor/stat/saveEveryNSeconds 60
+
+
+# Define a root listmode file output
+# the following is the Gate 'historical' way to do
+
+/gate/output/root/enable
+/gate/output/root/setFileName             output/pet
+/gate/output/root/setRootHitFlag          0
+/gate/output/root/setRootSinglesFlag      1
+/gate/output/root/setRootCoincidencesFlag 1
+/gate/output/root/setRootdelayFlag        1
+/gate/output/root/setRootNtupleFlag       0
+
+# the following is the new output type (both in root and npy)
+/gate/output/tree/enable
+/gate/output/tree/addFileName             output/pet2.root
+/gate/output/tree/addFileName             output/pet2.npy
+
+#/gate/output/tree/hits/enable
+/gate/output/tree/addCollection Singles
+/gate/output/tree/addCollection Coincidences
+/gate/output/tree/addCollection delay
+
+/gate/output/summary/enable
+/gate/output/summary/setFileName output/pet_summary.txt
+/gate/output/summary/addCollection Singles
+/gate/output/summary/addCollection Coincidences
+/gate/output/summary/addCollection delay
+
+
