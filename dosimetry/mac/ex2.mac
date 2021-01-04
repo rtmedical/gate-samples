@@ -9,7 +9,7 @@
 # VISUALISATION
 #=====================================================
 
-#/control/execute mac/visu.mac
+/control/execute mac/visu.mac
 
 #=====================================================
 # GEOMETRY
@@ -33,7 +33,6 @@
 
 /gate/world/daughters/name                      patient
 /gate/world/daughters/insert                    ImageNestedParametrisedVolume
-
 /gate/geometry/setMaterialDatabase              data/patient-HUmaterials.db
 /gate/patient/geometry/setHUToMaterialFile      data/patient-HU2mat.txt
 /gate/patient/geometry/setImage                 data/patient-2mm.mhd
@@ -80,7 +79,7 @@
 
 /gate/actor/addActor                        DoseActor  depthdose
 /gate/actor/depthdose/save                  output/depth-pat.txt
-/gate/actor/depthdose/attachTo    	        patient
+/gate/actor/depthdose/attachTo    	    patient
 /gate/actor/depthdose/stepHitType           random
 /gate/actor/depthdose/setPosition           0 0 0 cm
 #/gate/actor/depthdose/setResolution         1 1 100
@@ -94,7 +93,7 @@
 
 /gate/actor/addActor                          DoseActor  doseprofile
 /gate/actor/doseprofile/save                  output/profile-pat.txt
-/gate/actor/doseprofile/attachTo    	        patient
+/gate/actor/doseprofile/attachTo    	      patient
 /gate/actor/doseprofile/stepHitType           random
 /gate/actor/doseprofile/setPosition           0 0 4 cm
 /gate/actor/doseprofile/setResolution         100 1 1

@@ -9,7 +9,7 @@
 # VISUALISATION
 #=====================================================
 
-# /control/execute mac/visu.mac
+#/control/execute mac/visu.mac
 
 #=====================================================
 # GEOMETRY
@@ -45,9 +45,9 @@
 /gate/physics/Electron/SetCutInRegion   world 10 mm
 /gate/physics/Positron/SetCutInRegion   world 10 mm
 
-/gate/physics/Gamma/SetCutInRegion      waterbox 0.1 mm
-/gate/physics/Electron/SetCutInRegion   waterbox 0.1 mm
-/gate/physics/Positron/SetCutInRegion   waterbox 0.1 mm
+/gate/physics/Gamma/SetCutInRegion      waterbox 0.01 mm
+/gate/physics/Electron/SetCutInRegion   waterbox 0.01 mm
+/gate/physics/Positron/SetCutInRegion   waterbox 0.01 mm
 
 /gate/physics/displayCuts
 
@@ -58,7 +58,7 @@
 
 /gate/actor/addActor                        DoseActor  depthdose
 /gate/actor/depthdose/save                  output/gamma-depth.txt
-/gate/actor/depthdose/attachTo    	        waterbox
+/gate/actor/depthdose/attachTo    	    waterbox
 /gate/actor/depthdose/stepHitType           random
 /gate/actor/depthdose/setPosition           0 0 0 cm
 /gate/actor/depthdose/setResolution         1 1 100
@@ -71,7 +71,7 @@
 
 /gate/actor/addActor                          DoseActor  doseprofile
 /gate/actor/doseprofile/save                  output/gamma-profile.txt
-/gate/actor/doseprofile/attachTo    	        waterbox
+/gate/actor/doseprofile/attachTo    	      waterbox
 /gate/actor/doseprofile/stepHitType           random
 /gate/actor/doseprofile/setPosition           0 0 4 cm
 /gate/actor/doseprofile/setResolution         100 1 1

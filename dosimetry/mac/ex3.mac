@@ -9,7 +9,7 @@
 # VISUALISATION
 #=====================================================
 
-#/control/execute mac/visu.mac
+/control/execute mac/visu.mac
 
 #=====================================================
 # GEOMETRY
@@ -131,7 +131,7 @@
 /gate/source/mybeam/gps/pos/centre 0 0 0 mm
 /gate/source/mybeam/gps/pos/sigma_x 3 mm
 /gate/source/mybeam/gps/pos/sigma_y 3 mm
-/gate/source/mybeam/gps/ene/mono 100 MeV
+/gate/source/mybeam/gps/ene/mono 140 MeV
 /gate/source/mybeam/gps/ene/type Gauss
 /gate/source/mybeam/gps/ene/sigma 2.0 MeV
 /gate/source/mybeam/gps/direction 0 0 1
@@ -148,5 +148,5 @@
 #/tracking/verbose 1
 
 /gate/application/noGlobalOutput
-/gate/application/setTotalNumberOfPrimaries 10000
+/gate/application/setTotalNumberOfPrimaries 100
 /gate/application/start

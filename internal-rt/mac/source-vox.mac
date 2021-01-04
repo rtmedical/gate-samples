@@ -14,7 +14,7 @@
 /gate/source/Y90Source/TranslateTheSourceAtThisIsoCenter  0 0 0 mm
 
 /gate/source/Y90Source/gps/particle ion
-/gate/source/Y90Source/gps/ion 39 90 0 0
+/gate/source/Y90Source/gps/ion 71 177 0 0
 /gate/source/Y90Source/gps/angtype   iso
 /gate/source/Y90Source/gps/centre 0. 0. 0. mm
 /gate/source/Y90Source/gps/energy 0 MeV

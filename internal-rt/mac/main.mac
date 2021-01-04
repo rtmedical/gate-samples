@@ -9,7 +9,7 @@
 # VISUALISATION
 #=====================================================
 
-#/control/execute mac/visu.mac
+/control/execute mac/visu.mac
 
 #=====================================================
 # GEOMETRY
@@ -77,8 +77,8 @@
 # BEAMS
 #=====================================================
 
-/control/execute mac/source-gps.mac
-#/control/execute mac/source-vox.mac
+#/control/execute mac/source-gps.mac
+/control/execute mac/source-vox.mac
 
 #=====================================================
 # START BEAMS

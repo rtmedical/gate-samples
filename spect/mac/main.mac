@@ -4,7 +4,7 @@
 /control/execute mac/verbose.mac
 
 # Visu
-#/control/execute mac/visu.mac
+/control/execute mac/visu.mac
 # ---------------------------------------------
 
 
@@ -203,7 +203,7 @@
 
 # Go (at least 1 sec of simulation to see something, about 2 min computation time)
 /gate/application/setTimeStart 0 s
-/gate/application/setTimeSlice 10 s
-/gate/application/setTimeStop  10 s
+/gate/application/setTimeSlice 0.001 s
+/gate/application/setTimeStop  0.001 s
 /gate/application/start
 

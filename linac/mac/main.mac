@@ -129,5 +129,5 @@
 
 #/tracking/verbose 2
 
-/gate/application/setTotalNumberOfPrimaries 5000
+/gate/application/setTotalNumberOfPrimaries 500
 /gate/application/start

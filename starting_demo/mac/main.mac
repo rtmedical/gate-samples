@@ -22,7 +22,18 @@
 /gate/waterbox/placement/setTranslation 0 0 0 cm
 /gate/waterbox/setMaterial Water
 /gate/waterbox/vis/setVisible 1
-/gate/waterbox/vis/setColor yellow
+/gate/waterbox/vis/setColor blue
+
+# another object
+/gate/waterbox/daughters/name myobject
+/gate/waterbox/daughters/insert box
+/gate/myobject/geometry/setXLength   3 cm
+/gate/myobject/geometry/setYLength   3 cm
+/gate/myobject/geometry/setZLength   3 cm
+/gate/myobject/placement/setTranslation 2 2 3 cm
+/gate/myobject/setMaterial Lead
+/gate/myobject/vis/setVisible 1
+/gate/myobject/vis/setColor yellow
 
 # Detector plane
 /gate/world/daughters/name              detector
@@ -100,7 +111,7 @@
 # VISUALISATION
 #=====================================================
 
-/control/execute mac/visu.mac
+#/control/execute mac/visu.mac
 
 #=====================================================
 # START BEAMS
@@ -114,5 +125,5 @@
 # /gate/source/verbose 0
 
 /gate/application/noGlobalOutput
-/gate/application/setTotalNumberOfPrimaries 5000
+/gate/application/setTotalNumberOfPrimaries 50000
 /gate/application/start
