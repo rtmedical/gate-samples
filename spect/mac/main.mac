@@ -4,7 +4,7 @@
 /control/execute mac/verbose.mac
 
 # Visu
-/control/execute mac/visu.mac
+#/control/execute mac/visu.mac
 # ---------------------------------------------
 
 
@@ -34,7 +34,7 @@
 # collimator (PSD_position is defined in spect_head)
 /control/alias RADIUS 20.0
 /control/alias ANGLE 0.0
-/control/add TRANSLATION {RADIUS} {PSD_position}
+/control/add TRANSLATION {RADIUS} {SPECT_PSD_POSITION}
 /control/multiply TRANSLATION {TRANSLATION} -1
 /control/listAlias
 /gate/SPECThead/placement/setTranslation 0. {TRANSLATION} 0.  cm

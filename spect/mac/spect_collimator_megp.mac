@@ -7,12 +7,11 @@
 # Holes diam       : 3    mm
 # Septal thickness : 1.05 mm
 
-# The PSD_position is determined as the lowest coordinate of the PSD volume in
+# The SPECT_PSD_POSITION is determined as the lowest coordinate of the PSD volume in
 # the head box. It is used latter to compute the head position
-/control/alias PSD_position 8.41
+/control/alias SPECT_PSD_POSITION 8.41
 
 # -------------------
-
 
 # Collimator: main volume
 /gate/SPECThead/daughters/name collimator
@@ -32,7 +31,7 @@
 /gate/collimator/attachPhantomSD
 /gate/collimator/placement/setTranslation 0. 0. 5.17 cm
 /gate/collimator/vis/setColor red
-/gate/collimator/vis/forceWireframe
+#/gate/collimator/vis/forceWireframe
 
 # Collimator: aluminum PSD (Position Sensitive Detection)
 /gate/collimator/daughters/name aluminiumPSD
@@ -43,7 +42,7 @@
 /gate/aluminiumPSD/placement/setTranslation 0. 0. 3.190 cm
 /gate/aluminiumPSD/setMaterial Aluminium
 /gate/aluminiumPSD/vis/setColor green
-/gate/aluminiumPSD/vis/forceWireframe
+#/gate/aluminiumPSD/vis/forceWireframe
 
 
 # Collimator: PVC layer
@@ -55,7 +54,7 @@
 /gate/collimator_pvc_layer/placement/setTranslation 0. 0. 3.065 cm
 /gate/collimator_pvc_layer/setMaterial PVC
 /gate/collimator_pvc_layer/vis/setColor red
-/gate/collimator_pvc_layer/vis/forceWireframe
+#/gate/collimator_pvc_layer/vis/forceWireframe
 
 
 # Collimator: air gap
@@ -67,7 +66,7 @@
 /gate/collimator_air_gap/placement/setTranslation 0. 0. 2.80 cm
 /gate/collimator_air_gap/setMaterial Air
 /gate/collimator_air_gap/vis/setColor blue
-/gate/collimator_air_gap/vis/forceWireframe
+#/gate/collimator_air_gap/vis/forceWireframe
 
 
 # Collimator: core
@@ -79,7 +78,7 @@
 /gate/collimator_core/placement/setTranslation 0. 0. -0.29 cm
 /gate/collimator_core/setMaterial Lead
 /gate/collimator_core/vis/setColor blue
-/gate/collimator_core/vis/forceWireframe
+#/gate/collimator_core/vis/forceWireframe
 
 
 # Collimator: holes
@@ -92,15 +91,15 @@
 
 # Repeat the first hole in an array
 /gate/collimator_hole/repeaters/insert cubicArray
-/gate/collimator_hole/cubicArray/setRepeatNumberX 134
-/gate/collimator_hole/cubicArray/setRepeatNumberY 57
+/gate/collimator_hole/cubicArray/setRepeatNumberX 77
+/gate/collimator_hole/cubicArray/setRepeatNumberY 100
 /gate/collimator_hole/cubicArray/setRepeatNumberZ 1
-/gate/collimator_hole/cubicArray/setRepeatVector 4.05 7.01481 0. mm
+/gate/collimator_hole/cubicArray/setRepeatVector 7.01481 4.05  0. mm
 
 # Repeat these holes in a linear
 /gate/collimator_hole/repeaters/insert linear
 /gate/collimator_hole/linear/setRepeatNumber 2
-/gate/collimator_hole/linear/setRepeatVector  2.025 3.50704 0. mm
+/gate/collimator_hole/linear/setRepeatVector 3.50704 2.025 0. mm
 
 # Collimator: aluminum cover 2
 /gate/collimator/daughters/name collimator_aluminium_cover2
@@ -112,3 +111,4 @@
 /gate/collimator_aluminium_cover2/setMaterial Aluminium
 /gate/collimator_aluminium_cover2/vis/setColor blue
 /gate/collimator_aluminium_cover2/vis/forceWireframe
+
