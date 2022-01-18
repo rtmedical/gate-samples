@@ -111,7 +111,7 @@
 # VISUALISATION
 #=====================================================
 
-#/control/execute mac/visu.mac
+/control/execute mac/visu.mac
 
 #=====================================================
 # START BEAMS
@@ -125,5 +125,5 @@
 # /gate/source/verbose 0
 
 /gate/application/noGlobalOutput
-/gate/application/setTotalNumberOfPrimaries 50000
+/gate/application/setTotalNumberOfPrimaries 50
 /gate/application/start

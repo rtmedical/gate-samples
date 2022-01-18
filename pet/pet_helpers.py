@@ -34,12 +34,12 @@ def tget(t, array_name):
 
 
 def plot_transaxial_position(ax, coinc, slice_time):
-    times = tget(coinc, b'time1')
-    runID = tget(coinc, b'runID')
-    gpx1 = tget(coinc, b'globalPosX1')
-    gpx2 = tget(coinc, b'globalPosX2')
-    gpy1 = tget(coinc, b'globalPosY1')
-    gpy2 = tget(coinc, b'globalPosY2')
+    times = tget(coinc, 'time1')
+    runID = tget(coinc, 'runID')
+    gpx1 = tget(coinc, 'globalPosX1')
+    gpx2 = tget(coinc, 'globalPosX2')
+    gpy1 = tget(coinc, 'globalPosY1')
+    gpy2 = tget(coinc, 'globalPosY2')
     # only consider coincidences  with time lower than time_slice
     # (assuming 2 time slices only)
     mask = (times < slice_time)
@@ -67,8 +67,8 @@ def plot_transaxial_position(ax, coinc, slice_time):
 
 def plot_axial_detection(ax, coinc):
     # Axial Detection
-    ad1 = tget(coinc, b'globalPosZ1')
-    ad2 = tget(coinc, b'globalPosZ2')
+    ad1 = tget(coinc, 'globalPosZ1')
+    ad2 = tget(coinc, 'globalPosZ2')
     ad = np.concatenate((ad1, ad2))
     ax.hist(ad, histtype='step', bins=100)
     ax.set_xlabel('mm')
@@ -84,20 +84,20 @@ def get_counts(coinc):
     # Crnd  : the number of random (accidental) coincidences
     # Ctot  : Ctot = Cscat + Ctrue + Crnd is the total number of detected coincidences, sometimes called 'prompts'
     # 
-    ad1 = tget(coinc, b'globalPosZ1')
-    ad2 = tget(coinc, b'globalPosZ2')
+    ad1 = tget(coinc, 'globalPosZ1')
+    ad2 = tget(coinc, 'globalPosZ2')
     z = (ad1+ad2)/2
-    compt1 = tget(coinc, b'comptonPhantom1')
-    compt2 = tget(coinc, b'comptonPhantom2')
-    rayl1 = tget(coinc, b'RayleighPhantom1')
-    rayl2 = tget(coinc, b'RayleighPhantom2')
+    compt1 = tget(coinc, 'comptonPhantom1')
+    compt2 = tget(coinc, 'comptonPhantom2')
+    rayl1 = tget(coinc, 'RayleighPhantom1')
+    rayl2 = tget(coinc, 'RayleighPhantom2')
     mask =  ((compt1==0) & (compt2==0) & (rayl1==0) & (rayl2==0))
     trues = z[mask]
     scatters = z[~mask]
     # Randoms
-    eventID1 = tget(coinc, b'eventID1')
-    eventID2 = tget(coinc, b'eventID2')
-    time = tget(coinc, b'time1')
+    eventID1 = tget(coinc, 'eventID1')
+    eventID2 = tget(coinc, 'eventID2')
+    time = tget(coinc, 'time1')
     randoms = time[eventID1 != eventID2]
     Ctot = len(trues) + len(scatters) + len(randoms)
     return trues, scatters, randoms, Ctot
@@ -109,8 +109,8 @@ def plot_axial_sensitivity_detection(ax, trues):
     ax.set_title('Axial Sensitivity Detection')
 
 def plot_axial_scatter_fraction(ax, coinc, scatters): 
-    ad1 = tget(coinc, b'globalPosZ1')
-    ad2 = tget(coinc, b'globalPosZ2')
+    ad1 = tget(coinc, 'globalPosZ1')
+    ad2 = tget(coinc, 'globalPosZ2')
     z = (ad1+ad2)/2
     countsa, binsa = np.histogram(scatters, bins=100)
     countsr, binsr = np.histogram(z, bins=100)
@@ -120,9 +120,9 @@ def plot_axial_scatter_fraction(ax, coinc, scatters):
     ax.set_title('Axial Scatter fraction')
     
 def get_decays(coinc):
-    time = tget(coinc, b'time1')
-    sourceID1 = tget(coinc, b'sourceID1')
-    sourceID2 = tget(coinc, b'sourceID2')
+    time = tget(coinc, 'time1')
+    sourceID1 = tget(coinc, 'sourceID1')
+    sourceID2 = tget(coinc, 'sourceID2')
     mask = (sourceID1==0) & (sourceID2==0)
     decayF18 = time[mask]
     mask = (sourceID1==1) & (sourceID2==1)
@@ -153,7 +153,7 @@ def plot_rad_decay(ax, end_time, decayO15, decayF18):
     ax.set_title('Rad decays')
 
 def plot_randoms_delays(ax, randoms, delays):
-    t1 = tget(delays, b'time1')
+    t1 = tget(delays, 'time1')
     ax.hist(randoms, bins=100, histtype='stepfilled', alpha=0.6, label=f'Real randoms = {len(randoms)}')
     ax.hist(t1, bins=100, histtype='step', label=f'Delays (estimated randoms) = {len(delays)}')
     ax.legend()
@@ -162,10 +162,10 @@ def plot_randoms_delays(ax, randoms, delays):
     ax.set_title('Randoms')
     
 def plot_LOR(ax, coinc, nb):    
-    x1 = coinc.arrays()[b'globalPosX1']
-    y1 = coinc.arrays()[b'globalPosY1']
-    x2 = coinc.arrays()[b'globalPosX2']
-    y2 = coinc.arrays()[b'globalPosY2']
+    x1 = coinc.arrays()['globalPosX1']
+    y1 = coinc.arrays()['globalPosY1']
+    x2 = coinc.arrays()['globalPosX2']
+    y2 = coinc.arrays()['globalPosY2']
     x1 = x1[0:nb]
     y1 = y1[0:nb]
     x2 = x2[0:nb]
