@@ -1,0 +1,3 @@
+njobs = 4
+macro = mac/main.mac
+param = ""

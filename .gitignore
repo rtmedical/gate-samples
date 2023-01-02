@@ -1,17 +1,17 @@
 *~
 .DS_Store
 .ipynb_checkpoints
-
-*/output/*
-*/output_ref/*
-output_ref.zip
-
-g
 __pycache__
-old
 
-internal-rt/data/patient-HU2mat.txt
-internal-rt/data/patient-HUmaterials.db
-tle/data/phantom-HU2mat.txt
-tle/data/phantom-HUmaterials.db
+
+*/output/*.mhd
+*/output/*.raw
+*/output/*.txt
+*/output/*.root
+*/output/*.hdr
+*/output/*.sin
+*/output/*.npy
+
+
+
 
