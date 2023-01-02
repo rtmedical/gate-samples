@@ -1,0 +1,9 @@
+
+/gate/source/addSource mybeam gps
+/gate/source/mybeam/gps/particle e-
+/gate/source/mybeam/gps/pos/type Volume
+/gate/source/mybeam/gps/pos/shape Sphere
+/gate/source/mybeam/gps/pos/centre 0 0 0 mm
+/gate/source/mybeam/gps/ene/mono 2.28 MeV
+/gate/source/mybeam/gps/ang/type iso
+/gate/source/mybeam/setActivity 27000 Bq

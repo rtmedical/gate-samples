@@ -1,0 +1,20 @@
+
+
+/gate/source/addSource Y90Source voxel
+/gate/source/Y90Source/reader/insert	image
+
+## because the time-integrated spect image is expressed in MBq.h
+/gate/source/Y90Source/imageReader/translator/insert linear
+/gate/source/Y90Source/imageReader/linearTranslator/setScale 3600 MBq
+/gate/source/Y90Source/imageReader/readFile data/spect-jm.mhd
+
+# offset in mhd : -281.847 -279.547 -460.547 mm
+# voxel size 4.41806
+#/gate/source/Y90Source/setPosition -284.05603 -281.75603 -462.75603 mm
+/gate/source/Y90Source/TranslateTheSourceAtThisIsoCenter  0 0 0 mm
+
+/gate/source/Y90Source/gps/particle ion
+/gate/source/Y90Source/gps/ion 71 177 0 0
+/gate/source/Y90Source/gps/angtype   iso
+/gate/source/Y90Source/gps/centre 0. 0. 0. mm
+/gate/source/Y90Source/gps/energy 0 MeV

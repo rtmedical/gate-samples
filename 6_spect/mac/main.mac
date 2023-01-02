@@ -1,0 +1,209 @@
+
+# ---------------------------------------------
+# Verbose
+/control/execute mac/verbose.mac
+
+# Visu
+#/control/execute mac/visu.mac
+# ---------------------------------------------
+
+
+# ---------------------------------------------
+# GEOMETRY
+# ---------------------------------------------
+
+# Geometry world
+# Material Database
+/gate/geometry/setMaterialDatabase data/GateMaterials.db
+
+# World
+/gate/world/geometry/setXLength 1.5 m
+/gate/world/geometry/setYLength 1.5 m
+/gate/world/geometry/setZLength 1.5 m
+/gate/world/vis/setColor white
+/gate/world/vis/forceWireframe
+/gate/world/setMaterial Air
+
+# Geometry SPECT
+/control/execute mac/spect_head.mac
+/control/execute mac/spect_collimator_megp.mac
+/control/execute mac/spect_digitizer_In111.mac
+
+# Translation is according to collimator type and radius
+# The following lines compute the correct position of the head volume for this
+# collimator (PSD_position is defined in spect_head)
+/control/alias RADIUS 20.0
+/control/alias ANGLE 0.0
+/control/add TRANSLATION {RADIUS} {SPECT_PSD_POSITION}
+/control/multiply TRANSLATION {TRANSLATION} -1
+/control/listAlias
+/gate/SPECThead/placement/setTranslation 0. {TRANSLATION} 0.  cm
+
+# Waterbox for test
+/gate/world/daughters/name phantom
+/gate/world/daughters/insert box
+/gate/phantom/geometry/setXLength 20 cm
+/gate/phantom/geometry/setYLength 20 cm
+/gate/phantom/geometry/setZLength 20 cm
+/gate/phantom/vis/setColor blue
+/gate/phantom/vis/forceWireframe
+/gate/phantom/setMaterial Water
+
+# Gantry rotation -> rotate the patient instead
+/gate/phantom/placement/setRotationAxis  0 0 1
+/gate/phantom/placement/setRotationAngle {ANGLE} deg
+
+
+# -----------------------------------------------------
+# HU materials
+/gate/HounsfieldMaterialGenerator/SetMaterialTable                  data/Schneider2000MaterialsTable.txt
+/gate/HounsfieldMaterialGenerator/SetDensityTable                   data/Schneider2000DensitiesTable.txt
+/gate/HounsfieldMaterialGenerator/SetDensityTolerance               0.2 g/cm3
+/gate/HounsfieldMaterialGenerator/SetOutputMaterialDatabaseFilename data/patient-HUmaterials.db
+/gate/HounsfieldMaterialGenerator/SetOutputHUMaterialFilename       data/patient-HU2mat.txt
+/gate/HounsfieldMaterialGenerator/Generate
+
+# -----------------------------------------------------
+# Patient
+/gate/world/daughters/name                              patient
+/gate/world/daughters/insert                            ImageNestedParametrisedVolume
+/gate/geometry/setMaterialDatabase                      data/patient-HUmaterials.db
+/gate/patient/geometry/setHUToMaterialFile              data/patient-HU2mat.txt
+/gate/patient/geometry/setImage                         data/patient-lung-4mm.mhd
+/gate/patient/geometry/TranslateTheImageAtThisIsoCenter  4.6 30.9 -655.5 mm
+#/gate/patient/geometry/buildAndDumpLabeledImage         data/label.mhd
+
+
+# ---------------------------------------------
+# PHYSICS
+# ---------------------------------------------
+
+# Physics (uncomment RadioactiveDecay if source is a radionuclide)
+/gate/physics/addPhysicsList emstandard_opt3
+#/gate/physics/addProcess RadioactiveDecay
+
+# High cut by default
+/gate/physics/Gamma/SetCutInRegion      world 1 km
+/gate/physics/Electron/SetCutInRegion   world 1 km
+/gate/physics/Positron/SetCutInRegion   world 1 km
+
+# High cut in the phantom -> no bremstrahlung
+# do not compute absorbed dose with this parameters
+/gate/physics/Gamma/SetCutInRegion      phantom 1 km
+/gate/physics/Electron/SetCutInRegion   phantom 1 km
+/gate/physics/Positron/SetCutInRegion   phantom 1 km
+
+# Low cut in the spect
+/gate/physics/Gamma/SetCutInRegion      SPECThead 1 mm
+/gate/physics/Electron/SetCutInRegion   SPECThead 1 mm
+/gate/physics/Positron/SetCutInRegion   SPECThead 1 mm
+
+
+# ---------------------------------------------
+# OUTPUT
+# ---------------------------------------------
+
+# Save particles stats
+/gate/actor/addActor               SimulationStatisticActor stat
+/gate/actor/stat/save              output/stats.txt
+/gate/actor/stat/saveEveryNSeconds 20
+
+# Image output
+# output projection will contains 4 slices:
+# slice 1: all counts
+# slice 2: scatter window
+# slice 3: peak 1 window
+# slice 4: peak 2 window
+/gate/output/projection/enable
+/gate/output/projection/setFileName output/projection
+/gate/output/projection/addInputDataName scatter
+/gate/output/projection/addInputDataName peak171
+/gate/output/projection/addInputDataName peak245
+/gate/output/projection/pixelSizeX 4.41806 mm
+/gate/output/projection/pixelSizeY 4.41806 mm
+/gate/output/projection/pixelNumberX 128
+/gate/output/projection/pixelNumberY 128
+/gate/output/projection/projectionPlane XY
+
+# Phase space 
+/gate/actor/addActor PhaseSpaceActor phaseActor1
+/gate/actor/phaseActor1/attachTo crystal_volume
+/gate/actor/phaseActor1/useVolumeFrame true
+/gate/actor/phaseActor1/save output/phase_space.root
+/gate/actor/phaseActor1/enableProductionProcess true
+/gate/actor/phaseActor1/storeSecondaries false
+/gate/actor/phaseActor1/addFilter         particleFilter
+/gate/actor/phaseActor1/particleFilter/addParticle gamma
+
+# Generic ROOT output
+/gate/output/root/enable
+/gate/output/root/setFileName output/spect
+# Once a digitizer module has been created, a ROOT specific command is created too,
+# enabling to store informations at any state of the digitizing process
+/gate/output/root/setRootSinglesAdderFlag 1
+/gate/output/root/setRootSinglesBlurringFlag 1 
+/gate/output/root/setRootSinglesSpblurringFlag 0
+/gate/output/root/setRootSinglesThresholderFlag 1
+/gate/output/root/setRootSinglesUpholderFlag 1
+
+# the following is the new output type (both in root and npy)
+/gate/output/tree/enable
+/gate/output/tree/addFileName             output/spect.root
+/gate/output/tree/addFileName             output/spect.npy
+
+/gate/output/tree/hits/enable
+/gate/output/tree/addCollection Singles
+/gate/output/tree/addCollection scatter
+/gate/output/tree/addCollection peak171
+/gate/output/tree/addCollection peak245
+
+
+# ---------------------------------------------
+# INIT
+# ---------------------------------------------
+
+# Initialize
+/gate/run/initialize
+
+
+# ---------------------------------------------
+# SOURCE
+# ---------------------------------------------
+
+# Indium 111
+# Two peaks : 171 keV and 245 keV with weights 0.9061 and 0.9412
+# In order to take into account the correct nb of particle, the
+# activity is multiplied by the sum of peak intensity.
+# Activity -> 1 MBq x (0.9061+0.9412) = 1.8473
+/gate/source/addSource source gps
+/gate/source/source/gps/particle gamma
+/gate/source/source/gps/type Volume
+/gate/source/source/gps/shape Sphere
+/gate/source/source/gps/radius 2.87941 mm
+/gate/source/source/gps/angtype iso
+/gate/source/source/gps/energytype UserSpectrum
+/gate/source/source/gps/setSpectrumFile data/energy_spectrum_In111.txt
+/gate/source/source/setForcedHalfLife 242343.36 s
+/gate/source/source/setActivity 1.8473 MBq
+/gate/source/source/gps/centre 0 0 0 mm 
+
+# limit solid angle 
+/gate/source/source/gps/mintheta 30 deg
+/gate/source/source/gps/maxtheta 150 deg
+/gate/source/source/gps/minphi 30 deg
+/gate/source/source/gps/maxphi 150 deg
+
+# ---------------------------------------------
+# START
+# ---------------------------------------------
+
+# Random
+/gate/random/setEngineName MersenneTwister
+/gate/random/setEngineSeed auto
+
+# Go (at least 1 sec of simulation to see something, about 2 min computation time)
+/gate/application/setTimeStart 0 s
+/gate/application/setTimeSlice 0.001 s
+/gate/application/setTimeStop  0.001 s
+/gate/application/start
+

@@ -1,0 +1,129 @@
+
+#=====================================================
+# GEOMETRY
+#=====================================================
+
+/control/execute mac/verbose.mac
+/gate/geometry/setMaterialDatabase data/GateMaterials.db
+
+# World
+/gate/world/geometry/setXLength 1 m
+/gate/world/geometry/setYLength 1 m
+/gate/world/geometry/setZLength 1 m
+/gate/world/setMaterial Air
+
+
+# Box
+/gate/world/daughters/name              waterbox
+/gate/world/daughters/insert            box
+/gate/waterbox/geometry/setXLength      10 cm
+/gate/waterbox/geometry/setYLength      10 cm
+/gate/waterbox/geometry/setZLength      10 cm
+/gate/waterbox/placement/setTranslation 0 0 0 cm
+/gate/waterbox/setMaterial Water
+/gate/waterbox/vis/setVisible 1
+/gate/waterbox/vis/setColor blue
+
+# another object
+/gate/waterbox/daughters/name myobject
+/gate/waterbox/daughters/insert box
+/gate/myobject/geometry/setXLength   3 cm
+/gate/myobject/geometry/setYLength   3 cm
+/gate/myobject/geometry/setZLength   3 cm
+/gate/myobject/placement/setTranslation 2 2 3 cm
+/gate/myobject/setMaterial Lead
+/gate/myobject/vis/setVisible 1
+/gate/myobject/vis/setColor yellow
+
+# Detector plane
+/gate/world/daughters/name              detector
+/gate/world/daughters/insert            box
+/gate/detector/geometry/setXLength      10 cm
+/gate/detector/geometry/setYLength      10 cm
+/gate/detector/geometry/setZLength      2 mm
+/gate/detector/placement/setTranslation 0 0 -20 cm
+/gate/detector/setMaterial Lead
+/gate/detector/vis/setVisible 1
+/gate/detector/vis/setColor red
+
+
+#=====================================================
+# PHYSICS
+#=====================================================
+
+/gate/physics/addPhysicsList emstandard_opt3
+
+/gate/physics/Gamma/SetCutInRegion      world 1 mm
+/gate/physics/Electron/SetCutInRegion   world 1 mm
+/gate/physics/Positron/SetCutInRegion   world 1 mm
+
+/gate/physics/displayCuts
+
+
+#=====================================================
+# DETECTORS
+#=====================================================
+
+/gate/actor/addActor                  DoseActor  det
+/gate/actor/det/save                  output/output.mhd
+/gate/actor/det/attachTo    	      detector
+/gate/actor/det/stepHitType           random
+/gate/actor/det/setResolution         100 100 1
+/gate/actor/det/enableEdep            true
+/gate/actor/det/enableUncertaintyEdep false
+/gate/actor/det/enableDose            false
+/gate/actor/det/enableUncertaintyDose false
+/gate/actor/det/enableNumberOfHits    true
+
+/gate/actor/addActor               SimulationStatisticActor stat
+/gate/actor/stat/save              output/stat.txt
+
+
+#=====================================================
+# INITIALISATION
+#=====================================================
+
+/gate/run/initialize
+
+# Enable the following lines to display available and enabled processes
+# /gate/physics/processList Available
+# /gate/physics/processList Enabled
+
+
+#=====================================================
+# BEAMS
+#=====================================================
+
+
+/gate/source/addSource mybeam gps
+
+/gate/source/mybeam/gps/particle gamma
+/gate/source/mybeam/gps/pos/type Beam
+/gate/source/mybeam/gps/pos/shape Circle
+/gate/source/mybeam/gps/pos/centre 0 0 20 cm
+/gate/source/mybeam/gps/pos/radius 8 mm
+/gate/source/mybeam/gps/ene/mono 1 MeV
+
+/gate/source/mybeam/gps/ang/type focused
+/gate/source/mybeam/gps/ang/focuspoint 0 0 10 cm
+
+#=====================================================
+# VISUALISATION
+#=====================================================
+
+/control/execute mac/visu.mac
+
+#=====================================================
+# START BEAMS
+#=====================================================
+
+# JamesRandom Ranlux64 MersenneTwister
+/gate/random/setEngineName MersenneTwister
+/gate/random/setEngineSeed auto
+
+# /gate/random/verbose 1
+# /gate/source/verbose 0
+
+/gate/application/noGlobalOutput
+/gate/application/setTotalNumberOfPrimaries 50
+/gate/application/start
