@@ -9,8 +9,10 @@ ipympl
 jupyterlab
 ipywidgets
 pydicom
-
-
+stl
+mesh
+numpy-stl
+panda
 
 
 
