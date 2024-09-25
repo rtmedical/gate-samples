@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  gate:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: gate:latest
+    container_name: gate
+    volumes:
+      - .:/APP
+    ports:
+      - "8888:8888"  # Porta para JupyterLab
+      - "5901:5901"  # Porta para VNC (se configurado)
+    tty: true
+    stdin_open: true

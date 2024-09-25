@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  gate:
+    build: .
+    image: gate:latest
+    container_name: gate:latest
+    volumes:
+      - .:/home
+    ports:
+      - "8888:8888"
+    tty: true
+    stdin_open: true
