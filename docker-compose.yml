@@ -4,13 +4,15 @@ services:
   gate:
     build:
       context: ./docker
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     image: gate:latest
     container_name: gate
     volumes:
       - .:/APP
     ports:
       - "8888:8888"  # Porta para JupyterLab
-      - "5901:5901"  # Porta para VNC (se configurado)
+      - "5901:5901"  # Porta para VNC
+    environment:
+      VNC_PASS: "1234"  # Defina uma senha segura
     tty: true
     stdin_open: true

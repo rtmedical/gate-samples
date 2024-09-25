@@ -4,21 +4,28 @@
 # Saia imediatamente se algum comando falhar
 set -e
 
+# Configurar VNC
+# Definir DISPLAY
+export DISPLAY=:1
 
+# Configurar senha do VNC
+mkdir -p /home/$VNC_USER/.vnc
+echo "$VNC_PASS" | vncpasswd -f > /home/$VNC_USER/.vnc/passwd
+chmod 600 /home/$VNC_USER/.vnc/passwd
+chown -R $VNC_USER:$VNC_USER /home/$VNC_USER/.vnc
 
-# Inicie o Xvfb em segundo plano
-Xvfb :99 -screen 0 1024x768x24 &
-export DISPLAY=:99
+# Criar arquivo xstartup para iniciar XFCE
+echo "#!/bin/bash
+xrdb $HOME/.Xresources
+startxfce4 &" > /home/$VNC_USER/.vnc/xstartup
+chmod +x /home/$VNC_USER/.vnc/xstartup
+chown $VNC_USER:$VNC_USER /home/$VNC_USER/.vnc/xstartup
 
-# Fonte o arquivo de configuração para configurar o ambiente
-source /etc/mybashrc
+# Iniciar o servidor VNC como vncuser
+su - $VNC_USER -c "vncserver :1 -geometry 1280x800 -depth 24"
 
-# Habilite as extensões do Jupyter para widgets
-jupyter nbextension enable --py widgetsnbextension --sys-prefix
-jupyter nbextension enable --py ipympl --sys-prefix
+# Iniciar o JupyterLab
+jupyter lab --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' &
 
-# Inicie o Jupyter Notebook em segundo plano sem token
-jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' &
-
-# Execute o script original para comandos GATE
-exec /runGate.sh "$@"
+# Manter o contêiner ativo
+tail -f /dev/null
